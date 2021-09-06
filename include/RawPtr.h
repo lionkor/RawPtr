@@ -1,15 +1,20 @@
 #pragma once
 
 #include <functional>
+#include <type_traits>
 #include <utility>
 
 template<class T>
 struct RawPtr final {
     RawPtr() = default;
-    explicit RawPtr(T*&& value)
+    explicit RawPtr(T* value)
         : ptr(value) { }
     RawPtr(const RawPtr&) = delete;
     RawPtr& operator=(const RawPtr&) = delete;
+    RawPtr& operator=(T* p) {
+        ptr = p;
+        return *this;
+    }
     RawPtr(RawPtr&& other)
         : ptr(other.ptr) { other.ptr = nullptr; }
     RawPtr& operator=(RawPtr& other) { swap(other); }
@@ -46,3 +51,12 @@ struct hash<RawPtr<T>> {
     size_t operator()(const RawPtr<T>& ptr) { return std::hash<T*>(ptr.ptr); }
 };
 };
+
+void n() {
+    int x;
+    unsigned y;
+    RawPtr<int> a;
+    a = &x;
+    RawPtr<unsigned> b;
+    b = std::move(a);
+}

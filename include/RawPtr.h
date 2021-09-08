@@ -15,10 +15,6 @@ struct RawPtr final {
     }
     RawPtr(RawPtr&& other)
         : ptr(other.ptr) { other.ptr = nullptr; }
-    RawPtr& operator=(RawPtr& other) {
-        swap(other);
-        return *this;
-    }
     RawPtr& operator=(RawPtr&& other) {
         ptr = other.ptr;
         other.ptr = nullptr;
